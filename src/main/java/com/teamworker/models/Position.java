@@ -3,7 +3,7 @@ package com.teamworker.models;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -19,5 +19,5 @@ public class Position {
 
     //todo change one to many to many to many
     @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
-    private Set<User> users;
+    private List<User> users;
 }

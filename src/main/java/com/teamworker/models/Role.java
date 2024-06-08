@@ -2,12 +2,8 @@ package com.teamworker.models;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -15,11 +11,12 @@ public class Role {
 
     @Id
     @Column(name = "role_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "role_name")
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    private List<User> users;
 }

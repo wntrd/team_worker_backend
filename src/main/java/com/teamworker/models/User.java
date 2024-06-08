@@ -3,8 +3,7 @@ package com.teamworker.models;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,7 +13,7 @@ public class User {
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String login;
+    private String username;
     private String password;
 
     @Column(name = "user_name")
@@ -29,17 +28,21 @@ public class User {
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private Status status;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "users_projects",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private Set<Project> projects = new HashSet<>();
+    private List<Project> projects;
 
     @OneToMany(mappedBy = "assignee", fetch = FetchType.LAZY)
-    private Set<Task> assignedTasks;
+    private List<Task> assignedTasks;
 
     @OneToMany(mappedBy = "creator", fetch = FetchType.LAZY)
-    private Set<Task> createdTasks;
+    private List<Task> createdTasks;
 }

@@ -1,6 +1,8 @@
 package com.teamworker.models;
 
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -11,6 +13,7 @@ public class Task {
 
     @Id
     @Column(name = "task_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "task_name")
@@ -18,12 +21,14 @@ public class Task {
 
     private String description;
 
+    @CreatedDate
     @Column(name = "create_time")
     private Date createTime;
 
     @Column(name = "due_time")
     private Date dueTime;
 
+    @LastModifiedDate
     @Column(name = "last_edit_time")
     private Date lastEditTime;
 
