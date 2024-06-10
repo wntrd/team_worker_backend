@@ -1,5 +1,6 @@
 package com.teamworker.services.impl;
 
+import com.teamworker.models.Position;
 import com.teamworker.models.Role;
 import com.teamworker.models.User;
 import com.teamworker.repositories.RoleRepository;
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
-        log.info("IN findByLogin - user: {} found by username: {}", user, username);
+        log.info("IN findByLogin - user found by username: {}", username);
         return user;
     }
 
@@ -66,8 +67,21 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        log.info("IN findById - user: {} found by id: {}", user, id);
+        log.info("IN findById - user found by id: {}", id);
         return user;
+    }
+
+    @Override
+    public List<User> findUsersWithPosition(Position position) {
+        List<User> users = userRepository.getUsersByPosition(position);
+
+        if(users.isEmpty()) {
+            log.warn("IN findWithPosition - no users found with position: {}", position.getId());
+            return null;
+        }
+
+        log.info("IN findWithPosition - users found");
+        return users;
     }
 
     @Override

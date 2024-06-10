@@ -14,9 +14,9 @@ public class Priority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "column_name")
+    @Column(name = "priority_name")
     private String name;
 
-    @OneToMany(mappedBy = "priority", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "priority")
     private List<Task> tasks;
 }

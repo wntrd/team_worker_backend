@@ -17,6 +17,6 @@ public class TaskType {
     @Column(name = "task_type_name")
     private String name;
 
-    @OneToMany(mappedBy = "type", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "type")
     private List<Task> tasks;
 }

@@ -17,6 +17,6 @@ public class TaskStage {
     @Column(name = "task_stage_name")
     private String name;
 
-    @OneToMany(mappedBy = "stage", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "stage")
     private List<Task> tasks;
 }

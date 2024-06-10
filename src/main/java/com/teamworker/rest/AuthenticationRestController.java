@@ -4,6 +4,9 @@ import com.teamworker.dtos.AuthenticationRequestDto;
 import com.teamworker.models.User;
 import com.teamworker.security.jwt.JwtTokenProvider;
 import com.teamworker.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,16 +14,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth/")
+@Tag(name = "/api/v1/auth", description = "Контролер аутентифікації користувача")
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;
@@ -34,6 +35,8 @@ public class AuthenticationRestController {
         this.userService = userService;
     }
 
+    @PostMapping("login")
+    @Operation(summary = "Авторизація користувача")
     public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
         try {
             String username = requestDto.getUsername();
@@ -52,7 +55,7 @@ public class AuthenticationRestController {
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            throw new UsernameNotFoundException("Invalid username or password");
         }
     }
 }

@@ -17,6 +17,6 @@ public class ProjectStage {
     @Column(name = "project_stage_name")
     private String name;
 
-    @OneToMany(mappedBy = "projectStage", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "projectStage")
     private List<Project> projects;
 }

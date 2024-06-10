@@ -24,17 +24,17 @@ public class Project {
     @Column(name = "create_time")
     private Date createTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_stage_id", nullable = false)
     ProjectStage projectStage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_type_id", nullable = false)
     ProjectType projectType;
 
     @ManyToMany(mappedBy = "projects")
     private List<User> users;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<Task> tasks;
 }
