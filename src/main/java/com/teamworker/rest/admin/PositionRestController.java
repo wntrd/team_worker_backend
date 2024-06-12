@@ -1,8 +1,6 @@
-package com.teamworker.rest;
+package com.teamworker.rest.admin;
 
 import com.teamworker.dtos.PositionDto;
-import com.teamworker.dtos.UserDto;
-import com.teamworker.exceptions.UserNotFoundException;
 import com.teamworker.models.Position;
 import com.teamworker.models.User;
 import com.teamworker.services.PositionService;
@@ -14,41 +12,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/v1/admin")
-@Tag(name = "/api/v1/admin", description = "Контролер для адміністрування")
-public class AdminRestController {
+@RequestMapping(value = "/api/v1/admin/positions")
+@Tag(name = "/api/v1/admin/positions", description = "Контролер для керування посадами")
+public class PositionRestController {
 
-    private final UserService userService;
     private final PositionService positionService;
+    private final UserService userService;
 
     @Autowired
-    public AdminRestController(UserService userService, PositionService positionService) {
+    public PositionRestController(PositionService positionService, UserService userService) {
         this.positionService = positionService;
         this.userService = userService;
     }
 
-    @GetMapping(value = "users/get/{id}")
-    @Operation(summary = "Отримати користувача за id")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
-        User user = userService.findById(id);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        UserDto result = UserDto.fromUser(user);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "positions/get/all")
+    @GetMapping(value = "get/all")
     @Operation(summary = "Отримати всі посади")
     public ResponseEntity<List<PositionDto>> getPositions() {
         List<Position> positions = positionService.getAll();
@@ -61,7 +42,7 @@ public class AdminRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "positions/add")
+    @PostMapping(value = "add")
     @Operation(summary = "Додати посаду")
     public ResponseEntity<PositionDto> addPosition(@RequestBody PositionDto positionDto) {
 
@@ -70,7 +51,7 @@ public class AdminRestController {
         return new ResponseEntity<>(positionDto, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "positions/update/{id}")
+    @PutMapping(value = "update/{id}")
     @Operation(summary = "Оновити посаду")
     public ResponseEntity<PositionDto> updatePosition(
             @PathVariable(name = "id") Long id,
@@ -91,7 +72,7 @@ public class AdminRestController {
         return new ResponseEntity<>(positionDto, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "positions/delete/{id}")
+    @DeleteMapping(value = "delete/{id}")
     @Operation(summary = "Видалити посаду")
     public ResponseEntity<PositionDto> deletePosition(@PathVariable(name = "id") Long id) {
 
