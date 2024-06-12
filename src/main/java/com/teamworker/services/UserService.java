@@ -13,9 +13,11 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    User findById(Long id);
+    User getById(Long id);
 
     List<User> findUsersWithPosition(Position position);
+
+    User update(Long id, User user);
 
     void delete(Long id);
 }

@@ -1,5 +1,6 @@
 package com.teamworker.rest.admin;
 
+import com.teamworker.dtos.MainUserInfoDto;
 import com.teamworker.dtos.UserDto;
 import com.teamworker.models.User;
 import com.teamworker.services.UserService;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/v1/admin/users")
@@ -22,10 +26,23 @@ public class UserRestController {
         this.userService = userService;
     }
 
+    @GetMapping(value = "get/all")
+    @Operation(summary = "Отримати всіх користувачів")
+    public ResponseEntity<List<UserDto>> getAll(@PathVariable(name = "id") Long id) {
+        List<User> users = userService.getAll();
+
+        if (users == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<UserDto> result = users.stream().map(UserDto::fromUser).collect(Collectors.toList());
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @GetMapping(value = "get/{id}")
     @Operation(summary = "Отримати користувача за id")
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
-        User user = userService.findById(id);
+        User user = userService.getById(id);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -35,16 +52,19 @@ public class UserRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    // а чого не в auth контроллері?
-    @PostMapping(value = "register")
-    @Operation(summary = "Зареєструвати користувача")
-    public ResponseEntity registerUser(@RequestBody UserDto userDto) {
-        User user = userService.register(userDto.toUser());
+    @PutMapping(value = "/update/{id}")
+    @Operation(summary = "Оновити користувача")
+    public ResponseEntity<MainUserInfoDto> updateUser(
+            @PathVariable(value = "id") Long id,
+            @RequestBody MainUserInfoDto userDto) {
 
-        if (user == null) {
+        User user = userService.update(id, userDto.toUser());
 
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        MainUserInfoDto result = MainUserInfoDto.fromUser(user);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

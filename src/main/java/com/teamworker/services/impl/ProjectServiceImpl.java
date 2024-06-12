@@ -28,18 +28,18 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project update(Long id, Project project) {
-        Project findProject = projectRepository.findProjectById(id);
-        if(findProject == null) {
+        Project foundProject = projectRepository.findById(id).orElse(null);
+        if(foundProject == null) {
             return null;
         }
-        findProject.setName(project.getName());
-        findProject.setCreateTime(project.getCreateTime());
-        findProject.setProjectType(project.getProjectType());
-        findProject.setProjectStage(project.getProjectStage());
+        foundProject.setName(project.getName());
+        foundProject.setCreateTime(project.getCreateTime());
+        foundProject.setProjectType(project.getProjectType());
+        foundProject.setProjectStage(project.getProjectStage());
 
         log.info("IN update - {} project updated", project.getId());
 
-        return projectRepository.save(findProject);
+        return projectRepository.save(foundProject);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project getById(Long id) {
-        Project project = projectRepository.findProjectById(id);
+        Project project = projectRepository.findById(id).orElse(null);
         if(project == null) {
             return null;
         }

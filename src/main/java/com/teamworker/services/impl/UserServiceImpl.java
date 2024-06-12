@@ -1,8 +1,10 @@
 package com.teamworker.services.impl;
 
 import com.teamworker.models.Position;
+import com.teamworker.models.Project;
 import com.teamworker.models.Role;
 import com.teamworker.models.User;
+import com.teamworker.models.enums.Status;
 import com.teamworker.repositories.RoleRepository;
 import com.teamworker.repositories.UserRepository;
 import com.teamworker.services.UserService;
@@ -31,12 +33,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
+
+        if (findByUsername(user.getUsername()) != null) {
+            return null;
+        }
+
         Role roleUser = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(roleUser);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(userRoles);
+        user.setStatus(Status.ACTIVE);
 
         User registeredUser = userRepository.save(user);
         log.info("IN register - user: {} successfully registered", registeredUser);
@@ -59,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User getById(Long id) {
         User user = userRepository.findById(id).orElse(null);
 
         if (user == null) {
@@ -82,6 +90,29 @@ public class UserServiceImpl implements UserService {
 
         log.info("IN findWithPosition - users found");
         return users;
+    }
+
+    @Override
+    public User update(Long id, User user) {
+        User foundUser = userRepository.findById(id).orElse(null);
+        if(foundUser == null) {
+            return null;
+        }
+
+        User userWithSameUsername = findByUsername(user.getUsername());
+
+        if (userWithSameUsername != null && userWithSameUsername.getId() != id) {
+            return null;
+        }
+
+        foundUser.setUsername(user.getUsername());
+        foundUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        foundUser.setName(user.getName());
+        foundUser.setSurname(user.getSurname());
+
+        log.info("IN update - {} project updated", user.getId());
+
+        return userRepository.save(foundUser);
     }
 
     @Override

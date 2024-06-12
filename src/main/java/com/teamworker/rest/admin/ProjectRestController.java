@@ -28,7 +28,7 @@ public class ProjectRestController {
 
     @GetMapping(value = "/get/all")
     @Operation(summary = "Отримати всі проекти")
-    public ResponseEntity<List<ProjectDto>> getProjects() {
+    public ResponseEntity<List<ProjectDto>> getAll() {
         List<Project> projects = projectService.getAll();
         if(projects == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -39,7 +39,7 @@ public class ProjectRestController {
 
     @GetMapping(value = "/get/{id}")
     @Operation(summary = "Отримати проект за ідентифікатором")
-    public ResponseEntity<ProjectDto> getProject(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<ProjectDto> getProjectById(@PathVariable(value = "id") Long id) {
         Project project = projectService.getById(id);
         if(project == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);

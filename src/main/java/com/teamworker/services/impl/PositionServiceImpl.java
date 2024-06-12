@@ -29,14 +29,14 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public Position update(Long id, Position position) {
-        Position findPosition = positionRepository.findPositionById(id);
-        if(findPosition == null) {
+        Position foundPosition = positionRepository.findById(id).orElse(null);
+        if(foundPosition == null) {
             return null;
         }
-        findPosition.setName(position.getName());
-        findPosition.setProject(position.getProject());
+        foundPosition.setName(position.getName());
+        foundPosition.setProject(position.getProject());
         log.info("IN update - {} position updated", position.getId());
-        return positionRepository.save(findPosition);
+        return positionRepository.save(foundPosition);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public Position getById(Long id) {
-        Position position = positionRepository.findPositionById(id);
+        Position position = positionRepository.findById(id).orElse(null);
         if(position == null) {
             return null;
         }
