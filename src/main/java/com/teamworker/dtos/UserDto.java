@@ -6,6 +6,8 @@ import com.teamworker.models.Position;
 import com.teamworker.models.User;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
@@ -13,7 +15,7 @@ public class UserDto {
     private String username;
     private String name;
     private String surname;
-    private Position position;
+    private List<Position> position;
 
     public User toUser() {
         User user = new User();

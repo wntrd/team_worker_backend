@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 public class JwtUser implements UserDetails {
 
@@ -14,11 +15,11 @@ public class JwtUser implements UserDetails {
     private final String password;
     private final String name;
     private final String surname;
-    private final Position position;
+    private final List<Position> position;
     private final Collection<? extends GrantedAuthority> authorities;
     private final boolean enabled;
 
-    public JwtUser(Long id, String username, String password, String name, String surname, Position position,
+    public JwtUser(Long id, String username, String password, String name, String surname, List<Position> position,
                    Collection<? extends GrantedAuthority> authorities, boolean enabled) {
         this.id = id;
         this.username = username;
@@ -59,7 +60,7 @@ public class JwtUser implements UserDetails {
         return surname;
     }
 
-    public Position getPosition() {
+    public List<Position> getPosition() {
         return position;
     }
 

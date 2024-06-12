@@ -1,5 +1,8 @@
 package com.teamworker.models;
 
+import com.teamworker.models.enums.Priority;
+import com.teamworker.models.enums.TaskStage;
+import com.teamworker.models.enums.TaskType;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -50,15 +53,15 @@ public class Task {
     @JoinColumn(name = "project_id",nullable = false)
     private Project project;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "priority_id",nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
     private Priority priority;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stage_id",nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "stage")
     private TaskStage stage;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_type_id",nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
     private TaskType type;
 }

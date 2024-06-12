@@ -22,7 +22,11 @@ public class Position {
     @Column(name = "position_name")
     private String name;
 
-    @OneToMany(mappedBy = "position", fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
+    @ManyToMany(mappedBy = "position", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<User> users;
 }

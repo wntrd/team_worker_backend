@@ -1,8 +1,7 @@
 package com.teamworker.models;
 
+import com.teamworker.models.enums.Status;
 import lombok.*;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -24,9 +23,11 @@ public class User {
     @Column(name = "user_surname")
     private String surname;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="position_id")
-    private Position position;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "users_positions",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "position_id"))
+    private List<Position> position;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -38,11 +39,11 @@ public class User {
     @Column(name = "status")
     private Status status;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    /*@ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "users_projects",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private List<Project> projects;
+    private List<Project> projects;*/
 
     @OneToMany(mappedBy = "assignee")
     private List<Task> assignedTasks;

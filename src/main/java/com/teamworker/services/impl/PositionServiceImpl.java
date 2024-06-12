@@ -5,8 +5,6 @@ import com.teamworker.models.User;
 import com.teamworker.repositories.PositionRepository;
 import com.teamworker.services.PositionService;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +34,7 @@ public class PositionServiceImpl implements PositionService {
             return null;
         }
         findPosition.setName(position.getName());
+        findPosition.setProject(position.getProject());
         log.info("IN update - {} position updated", position.getId());
         return positionRepository.save(findPosition);
     }
@@ -49,12 +48,20 @@ public class PositionServiceImpl implements PositionService {
     @Override
     public List<Position> getAll() {
         List<Position> positions = positionRepository.findAll();
+        if(positions.isEmpty()) {
+            return null;
+        }
         log.info("IN getAll - {} positions found", positions.size());
         return positions;
     }
 
     @Override
     public Position getById(Long id) {
-        return positionRepository.findPositionById(id);
+        Position position = positionRepository.findPositionById(id);
+        if(position == null) {
+            return null;
+        }
+        log.info("IN getById {} position found", position.getName());
+        return position;
     }
 }

@@ -1,7 +1,7 @@
 package com.teamworker.security.jwt;
 
 import com.teamworker.models.Role;
-import com.teamworker.models.Status;
+import com.teamworker.models.enums.Status;
 import com.teamworker.models.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
