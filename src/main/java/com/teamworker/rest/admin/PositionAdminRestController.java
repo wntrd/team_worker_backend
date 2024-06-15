@@ -58,25 +58,11 @@ public class PositionAdminRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "add")
-    @Operation(summary = "Додати посаду")
-    public ResponseEntity<PositionDto> addPosition(@RequestBody PositionDto positionDto) throws ParseException {
-        Project project = projectService.getById(positionDto.getProject().getId());
-        if(project == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        positionService.add(positionDto.toPosition());
-
-        return new ResponseEntity<>(positionDto, HttpStatus.CREATED);
-    }
-
     @PutMapping(value = "update/{id}")
     @Operation(summary = "Оновити посаду")
     public ResponseEntity<PositionDto> updatePosition(
             @PathVariable(name = "id") Long id,
             @RequestBody PositionDto positionDto) throws ParseException {
-
         Position position = positionService.update(id, positionDto.toPosition());
 
         if(position == null) {
@@ -88,18 +74,4 @@ public class PositionAdminRestController {
         return new ResponseEntity<>(positionDto, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "delete/{id}")
-    @Operation(summary = "Видалити посаду")
-    public ResponseEntity<PositionDto> deletePosition(@PathVariable(name = "id") Long id) {
-
-        Position position = positionService.getById(id);
-        if(position == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-
-
-        positionService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 }

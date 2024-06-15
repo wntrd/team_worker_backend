@@ -1,6 +1,7 @@
 package com.teamworker.services;
 
 import com.teamworker.models.Project;
+import com.teamworker.models.User;
 
 import java.util.List;
 
@@ -15,4 +16,6 @@ public interface ProjectService {
     List<Project> getAll();
 
     Project getById(Long id);
+
+    List<Project> getAllByManager(Long id);
 }

@@ -60,22 +60,6 @@ public class TaskAdminRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/update/{id}")
-    @Operation(summary = "Оновити завдання")
-    public ResponseEntity<TaskDto> updateTask(
-            @PathVariable(value = "id") Long id,
-            @RequestBody TaskDto taskDto) throws ParseException {
-
-        Task task = taskService.update(id, taskDto.toTask());
-
-        if(task == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        TaskDto result = TaskDto.fromTask(task);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @GetMapping(value = "/get/all/{stage}")
     @Operation(summary = "Отримати всі завдання за стадією для адміністратора")
     public ResponseEntity<List<TaskDto>> getAllByStage(@PathVariable(value = "stage") String stageName) throws ParseException {

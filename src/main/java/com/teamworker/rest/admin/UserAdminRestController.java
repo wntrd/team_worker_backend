@@ -29,28 +29,15 @@ public class UserAdminRestController {
         this.userService = userService;
     }
 
-    @GetMapping(value = "get/all")
-    @Operation(summary = "Отримати всіх користувачів")
-    public ResponseEntity<List<UserDto>> getAll() {
-        List<User> users = userService.getAll();
+    @GetMapping(value = "get/all/managers")
+    @Operation(summary = "Отримати всіх менеджерів")
+    public ResponseEntity<List<UserDto>> getAllManagers() {
+        List<User> users = userService.getAllManagers();
 
         if (users == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         List<UserDto> result = users.stream().map(UserDto::fromUser).collect(Collectors.toList());
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "get/{id}")
-    @Operation(summary = "Отримати користувача за id")
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
-        User user = userService.getById(id);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        UserDto result = UserDto.fromUser(user);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -71,29 +58,13 @@ public class UserAdminRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/add/position/{id}")
-    @Operation(summary = "Додати користувачу посаду")
-    public ResponseEntity<UserDto> addPosition(
+    @PutMapping(value = "/update/role/{id}")
+    @Operation(summary = "Змінити роль користувача")
+    public ResponseEntity<UserDto> updateUserRole(
             @PathVariable(value = "id") Long id,
-            @RequestBody PositionDto positionDto) throws ParseException {
+            @RequestBody String role) {
 
-        User user = userService.addPosition(id, positionDto.toPosition());
-
-        if(user == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        UserDto result = UserDto.fromUser(user);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
-    @PutMapping(value = "/delete/{id}/position")
-    @Operation(summary = "Видалити користувачу посаду")
-    public ResponseEntity<UserDto> deletePosition(
-            @PathVariable(value = "id") Long id,
-            @RequestBody PositionDto positionDto) throws ParseException {
-
-        User user = userService.deletePosition(id, positionDto.toPosition());
+        User user = userService.updateRole(id, role);
 
         if(user == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);

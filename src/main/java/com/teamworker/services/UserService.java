@@ -12,6 +12,10 @@ public interface UserService {
 
     List<User> getAll();
 
+    List<User> getAllByManager(Long id);
+
+    List<User> getAllManagers();
+
     User findByUsername(String username);
 
     User getById(Long id);
@@ -26,9 +30,9 @@ public interface UserService {
 
     boolean isAdmin(User user);
 
-    boolean isAdminOfProject(User user, Project project);
-
     User addPosition(Long id, Position position);
 
     User deletePosition(Long id, Position position);
+
+    User updateRole(Long id, String role);
 }

@@ -2,7 +2,9 @@ package com.teamworker.rest.admin;
 
 import com.teamworker.dtos.PositionDto;
 import com.teamworker.dtos.ProjectDto;
+import com.teamworker.models.Position;
 import com.teamworker.models.Project;
+import com.teamworker.models.User;
 import com.teamworker.services.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +20,7 @@ import java.util.stream.Collectors;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping(value = "/api/v1/admin/projects")
-@Tag(name = "/api/v1/admin/projects", description = "Контролер для керування проектами")
+@Tag(name = "/api/v1/admin/projects", description = "Контролер для керування проектами (admin)")
 public class ProjectAdminRestController {
 
     private final ProjectService projectService;
@@ -36,17 +38,6 @@ public class ProjectAdminRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/get/{id}")
-    @Operation(summary = "Отримати проект за ідентифікатором")
-    public ResponseEntity<ProjectDto> getProjectById(@PathVariable(value = "id") Long id) {
-        Project project = projectService.getById(id);
-        if(project == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-        ProjectDto result = ProjectDto.fromProject(project);
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @PostMapping(value = "/add")
     @Operation(summary = "Додати проект")
     public ResponseEntity<ProjectDto> addProject(@RequestBody ProjectDto projectDto) {
@@ -55,23 +46,8 @@ public class ProjectAdminRestController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
         ProjectDto result = ProjectDto.fromProject(project);
+
         return new ResponseEntity<>(result, HttpStatus.CREATED);
-    }
-
-    @PutMapping(value = "/update/{id}")
-    @Operation(summary = "Оновити проект")
-    public ResponseEntity<ProjectDto> updateProject(
-            @PathVariable(value = "id") Long id,
-            @RequestBody ProjectDto projectDto) {
-
-        Project project = projectService.update(id, projectDto.toProject());
-
-        if(project == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        ProjectDto result = ProjectDto.fromProject(project);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}")

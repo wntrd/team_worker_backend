@@ -1,6 +1,7 @@
 package com.teamworker.dtos;
 
 import com.teamworker.models.Position;
+import com.teamworker.models.User;
 import com.teamworker.models.enums.ProjectStage;
 import com.teamworker.models.enums.ProjectType;
 import com.teamworker.models.Project;
@@ -18,6 +19,7 @@ public class ProjectDto {
     private ProjectStage projectStage;
     private ProjectType projectType;
     private List<Position> positions;
+    private User manager;
 
     public Project toProject() {
         Project project = new Project();
@@ -27,6 +29,7 @@ public class ProjectDto {
         project.setProjectStage(projectStage);
         project.setProjectType(projectType);
         project.setPositions(positions);
+        project.setManager(manager);
         return project;
     }
 
@@ -38,6 +41,7 @@ public class ProjectDto {
         projectDto.setProjectStage(project.getProjectStage());
         projectDto.setProjectType(project.getProjectType());
         projectDto.setPositions(project.getPositions());
+        projectDto.setManager(project.getManager());
         return projectDto;
     }
 }

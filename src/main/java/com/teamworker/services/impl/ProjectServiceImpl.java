@@ -5,6 +5,7 @@ import com.teamworker.models.Project;
 import com.teamworker.models.User;
 import com.teamworker.repositories.PositionRepository;
 import com.teamworker.repositories.ProjectRepository;
+import com.teamworker.repositories.UserRepository;
 import com.teamworker.services.ProjectService;
 import com.teamworker.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,6 +22,7 @@ import java.util.List;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
     private final PositionRepository positionRepository;
     private final UserService userService;
 
@@ -27,13 +30,16 @@ public class ProjectServiceImpl implements ProjectService {
     public Project add(Project project) {
         Project savedProject = projectRepository.save(project);
         log.info("IN add - {} project added", project.getName());
+
         Position position = new Position();
-        position.setName("Administrator");
+        position.setName("Керівник проекту");
         position.setProject(savedProject);
-        List<User> users = new ArrayList<>();
-        users.add(userService.getCurrentUser());
-        position.setUsers(users);
-        positionRepository.save(position);
+        Position savedPosition = positionRepository.save(position);
+
+        User manager = userService.getById(savedProject.getManager().getId());
+        manager.getPosition().add(savedPosition);
+        userRepository.save(manager);
+
         log.info("IN add - {} position added", position.getName());
         return savedProject;
     }
@@ -48,6 +54,21 @@ public class ProjectServiceImpl implements ProjectService {
         foundProject.setCreateTime(project.getCreateTime());
         foundProject.setProjectType(project.getProjectType());
         foundProject.setProjectStage(project.getProjectStage());
+
+        User prevManager = userService.getById(foundProject.getManager().getId());
+
+        Position managerPosition = foundProject.getPositions().stream()
+                .filter(position -> position.getName().equals("Керівник проекту"))
+                .collect(Collectors.toList()).get(0);
+
+        prevManager.getPosition().remove(managerPosition);
+        userRepository.save(prevManager);
+
+        User newManager = userService.getById(project.getManager().getId());
+        newManager.getPosition().add(managerPosition);
+        User savedManager = userRepository.save(newManager);
+
+        foundProject.setManager(savedManager);
 
         log.info("IN update - {} project updated", project.getId());
 
@@ -90,5 +111,15 @@ public class ProjectServiceImpl implements ProjectService {
         }
         log.info("IN getById {} project found", project.getName());
         return project;
+    }
+
+    @Override
+    public List<Project> getAllByManager(Long id) {
+        List<Project> projects = projectRepository.getAllByManagerId(id);
+        if(projects.isEmpty()) {
+            return null;
+        }
+        log.info("IN getAllByManager - {} projects found", projects.size());
+        return projects;
     }
 }
