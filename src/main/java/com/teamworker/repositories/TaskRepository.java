@@ -6,6 +6,7 @@ import com.teamworker.models.User;
 import com.teamworker.models.enums.TaskStage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
@@ -14,4 +15,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> getAllByAssigneeAndStage(User assignee, TaskStage stage);
 
     List<Task> getAllByStage(TaskStage stage);
+
+    List<Task> getAllByAssigneeIdAndCreateTimeBetween(Long assignee_id, Timestamp time1, Timestamp time2);
 }

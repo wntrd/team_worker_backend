@@ -124,6 +124,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User deletePosition(Long id, Position position) {
+        User foundUser = userRepository.findById(id).orElse(null);
+        if(foundUser == null) {
+            return null;
+        }
+
+        boolean result = foundUser.getPosition().remove(position);
+
+        log.info("IN deletePosition - {} position deleted - {}", position.getName(), result);
+        return userRepository.save(foundUser);
+    }
+
+    @Override
     public void delete(Long id) {
         User user = userRepository.findById(id).orElse(null);
         user.setPosition(new ArrayList<>());

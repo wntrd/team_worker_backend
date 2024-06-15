@@ -72,12 +72,28 @@ public class UserAdminRestController {
     }
 
     @PutMapping(value = "/add/position/{id}")
-    @Operation(summary = "Оновити користувача")
+    @Operation(summary = "Додати користувачу посаду")
     public ResponseEntity<UserDto> addPosition(
             @PathVariable(value = "id") Long id,
             @RequestBody PositionDto positionDto) throws ParseException {
 
         User user = userService.addPosition(id, positionDto.toPosition());
+
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        UserDto result = UserDto.fromUser(user);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/delete/{id}/position")
+    @Operation(summary = "Видалити користувачу посаду")
+    public ResponseEntity<UserDto> deletePosition(
+            @PathVariable(value = "id") Long id,
+            @RequestBody PositionDto positionDto) throws ParseException {
+
+        User user = userService.deletePosition(id, positionDto.toPosition());
 
         if(user == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);

@@ -32,17 +32,40 @@ public class TaskDto {
     private TaskType type;
     private boolean isOverdue;
 
-    public Task toTask() {
+    public Task toTask() throws ParseException {
+
+        SimpleDateFormat getDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+        Date parseCreateTimeDate = simpleDateFormat.parse(createTime);
+        Timestamp parsedCreateTime = new java.sql.Timestamp(parseCreateTimeDate.getTime());
+
+        String dueTimeReplaced = dueTime.replace('T', ' ');
+        Timestamp parsedGetDueTime = new Timestamp(getDateFormat.parse(dueTimeReplaced).getTime());
+
+        Date parseLastEditTimeDate = simpleDateFormat.parse(lastEditTime);
+        Timestamp parsedLastEditTime = new java.sql.Timestamp(parseLastEditTimeDate.getTime());
 
         Task task = new Task();
+
         task.setId(id);
         task.setName(name);
         task.setDescription(description);
-        task.setCreateTime(createTime);
-        task.setDueTime(dueTime);
-        task.setLastEditTime(lastEditTime);
-        task.setStartTime(startTime);
-        task.setEndTime(endTime);
+        task.setCreateTime(parsedCreateTime);
+        task.setDueTime(parsedGetDueTime);
+        task.setLastEditTime(parsedLastEditTime);
+        if (startTime != null && !startTime.isEmpty()) {
+            Date parseStartTimeDate = simpleDateFormat.parse(startTime);
+            Timestamp parsedStartTime = new java.sql.Timestamp(parseStartTimeDate.getTime());
+            task.setStartTime(parsedStartTime);
+        }
+        task.setStartTime(null);
+        if (endTime != null && !endTime.isEmpty()) {
+            Date parseEndTimeDate = simpleDateFormat.parse(endTime);
+            Timestamp parsedEndTime = new java.sql.Timestamp(parseEndTimeDate.getTime());
+            task.setEndTime(parsedEndTime);
+        }
+        task.setEndTime(null);
         task.setAssignee(assignee.toUser());
         task.setCreator(creator.toUser());
         task.setProject(project);
@@ -53,16 +76,19 @@ public class TaskDto {
         return task;
     }
 
-    public static TaskDto fromTask(Task task) {
+    public static TaskDto fromTask(Task task) throws ParseException {
+        SimpleDateFormat getDateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
+
         TaskDto taskDto = new TaskDto();
         taskDto.setId(task.getId());
         taskDto.setName(task.getName());
         taskDto.setDescription(task.getDescription());
-        taskDto.setCreateTime(task.getCreateTime());
-        taskDto.setDueTime(task.getDueTime());
-        taskDto.setLastEditTime(task.getLastEditTime());
-        taskDto.setStartTime(task.getStartTime());
-        taskDto.setEndTime(task.getEndTime());
+        taskDto.setCreateTime(simpleDateFormat.format(task.getCreateTime()));
+        taskDto.setDueTime(getDateFormat.format(task.getDueTime()));
+        taskDto.setLastEditTime(simpleDateFormat.format(task.getLastEditTime()));
+        taskDto.setStartTime(task.getStartTime() == null ? "" : simpleDateFormat.format(task.getStartTime()));
+        taskDto.setEndTime(task.getEndTime() == null ? "" : simpleDateFormat.format(task.getEndTime()));
         taskDto.setAssignee(UserDto.fromUser(task.getAssignee()));
         taskDto.setCreator(UserDto.fromUser(task.getCreator()));
         taskDto.setProject(task.getProject());

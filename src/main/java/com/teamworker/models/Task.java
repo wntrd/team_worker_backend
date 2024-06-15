@@ -26,19 +26,19 @@ public class Task {
     private String description;
 
     @Column(name = "create_time")
-    private String createTime;
+    private Timestamp createTime;
 
     @Column(name = "due_time")
-    private String dueTime;
+    private Timestamp dueTime;
 
     @Column(name = "last_edit_time")
-    private String lastEditTime;
+    private Timestamp lastEditTime;
 
     @Column(name = "start_time")
-    private String startTime;
+    private Timestamp startTime;
 
     @Column(name = "end_time")
-    private String endTime;
+    private Timestamp endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id",nullable = false)

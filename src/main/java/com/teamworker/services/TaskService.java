@@ -26,4 +26,6 @@ public interface TaskService {
     List<Task> getAllByStageForAdmin(String stageName) throws ParseException;
 
     Task changeStage(Long taskId, String stageName);
+
+    List<Task> getAllByAssigneeAndCreateTime(Long id, String startTime, String finalTime) throws ParseException;
 }
