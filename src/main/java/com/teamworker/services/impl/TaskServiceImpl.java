@@ -138,8 +138,12 @@ public class TaskServiceImpl implements TaskService {
 
         if (Objects.equals(stageName, TaskStage.IN_PROGRESS.name())) {
             task.setStartTime(new Timestamp(new Date().getTime()));
+            task.setEndTime(null);
         }
         else if (Objects.equals(stageName, ON_REVIEW.name())) {
+            if (task.getStartTime() == null) {
+                task.setStartTime(new Timestamp(new Date().getTime()));
+            }
             task.setEndTime(new Timestamp(new Date().getTime()));
         }
 
