@@ -30,6 +30,7 @@ public class TaskDto {
     private Priority priority;
     private TaskStage stage;
     private TaskType type;
+    private boolean isOverdue;
 
     public Task toTask() {
 
@@ -48,6 +49,7 @@ public class TaskDto {
         task.setPriority(priority);
         task.setStage(stage);
         task.setType(type);
+        task.setOverdue(isOverdue);
         return task;
     }
 
@@ -67,6 +69,7 @@ public class TaskDto {
         taskDto.setPriority(task.getPriority());
         taskDto.setStage(task.getStage());
         taskDto.setType(task.getType());
+        taskDto.setOverdue(task.isOverdue());
         return taskDto;
     }
 }

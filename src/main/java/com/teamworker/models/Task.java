@@ -63,4 +63,7 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private TaskType type;
+
+    @Column(name = "is_overdue")
+    private boolean isOverdue;
 }

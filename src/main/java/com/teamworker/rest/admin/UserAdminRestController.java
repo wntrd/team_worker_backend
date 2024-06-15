@@ -90,9 +90,12 @@ public class UserAdminRestController {
     @DeleteMapping(value = "/delete/{id}")
     @Operation(summary = "Видалити користувача")
     public ResponseEntity<UserDto> deleteUser(@PathVariable(value = "id") Long id) {
-        if(userService.getById(id) == null) {
+
+        if(userService.getById(id) == null || !userService.getById(id).getAssignedTasks().isEmpty()
+        || !userService.getById(id).getCreatedTasks().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
+
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

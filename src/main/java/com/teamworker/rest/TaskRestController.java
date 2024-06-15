@@ -53,17 +53,9 @@ public class TaskRestController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/get/all")
-    @Operation(summary = "Отримати всі завдання")
-    public ResponseEntity<List<TaskDto>> getAll() {
-        List<Task> tasks = taskService.getAll();
-        List<TaskDto> result = tasks.stream().map(TaskDto::fromTask).collect(Collectors.toList());
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
     @GetMapping(value = "/get/all/{stage}")
     @Operation(summary = "Отримати всі завдання за стадією")
-    public ResponseEntity<List<TaskDto>> getAllByStage(@PathVariable(value = "stage") String stageName) {
+    public ResponseEntity<List<TaskDto>> getAllByStage(@PathVariable(value = "stage") String stageName) throws ParseException {
         List<Task> tasks = taskService.getAllByStage(stageName);
         List<TaskDto> result = tasks.stream().map(TaskDto::fromTask).collect(Collectors.toList());
         return new ResponseEntity<>(result, HttpStatus.OK);
