@@ -15,4 +15,5 @@ public interface PositionService {
     List<Position> getAll();
 
     Position getById(Long id);
+
 }

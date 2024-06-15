@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping(value = "/api/v1/auth/")
 @Tag(name = "/api/v1/auth", description = "Контролер аутентифікації користувача")
 public class AuthenticationRestController {

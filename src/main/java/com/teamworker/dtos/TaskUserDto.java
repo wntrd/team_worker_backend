@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserDto {
+public class TaskUserDto {
     private Long id;
     private String username;
     private String name;

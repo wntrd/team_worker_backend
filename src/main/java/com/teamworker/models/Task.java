@@ -8,7 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -24,22 +24,20 @@ public class Task {
 
     private String description;
 
-    @CreatedDate
     @Column(name = "create_time")
-    private Date createTime;
+    private Timestamp createTime;
 
     @Column(name = "due_time")
-    private Date dueTime;
+    private Timestamp dueTime;
 
-    @LastModifiedDate
     @Column(name = "last_edit_time")
-    private Date lastEditTime;
+    private Timestamp lastEditTime;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private Timestamp startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private Timestamp endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id",nullable = false)

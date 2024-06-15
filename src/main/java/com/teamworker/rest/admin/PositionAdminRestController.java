@@ -3,7 +3,6 @@ package com.teamworker.rest.admin;
 import com.teamworker.dtos.PositionDto;
 import com.teamworker.models.Position;
 import com.teamworker.models.Project;
-import com.teamworker.models.User;
 import com.teamworker.services.PositionService;
 import com.teamworker.services.ProjectService;
 import com.teamworker.services.UserService;
@@ -14,20 +13,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping(value = "/api/v1/admin/positions")
 @Tag(name = "/api/v1/admin/positions", description = "Контролер для керування посадами")
-public class PositionRestController {
+public class PositionAdminRestController {
 
     private final PositionService positionService;
     private final ProjectService projectService;
     private final UserService userService;
 
     @Autowired
-    public PositionRestController(PositionService positionService, UserService userService, ProjectService projectService) {
+    public PositionAdminRestController(PositionService positionService, UserService userService, ProjectService projectService) {
         this.positionService = positionService;
         this.userService = userService;
         this.projectService = projectService;
@@ -59,8 +60,8 @@ public class PositionRestController {
 
     @PostMapping(value = "add")
     @Operation(summary = "Додати посаду")
-    public ResponseEntity<PositionDto> addPosition(@RequestBody PositionDto positionDto) {
-        Project project = projectService.getById(positionDto.getProject().getId());
+    public ResponseEntity<PositionDto> addPosition(@RequestBody PositionDto positionDto) throws ParseException {
+        Project project = projectService.getById(positionDto.getProjectDto().getId());
         if(project == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -74,7 +75,7 @@ public class PositionRestController {
     @Operation(summary = "Оновити посаду")
     public ResponseEntity<PositionDto> updatePosition(
             @PathVariable(name = "id") Long id,
-            @RequestBody PositionDto positionDto) {
+            @RequestBody PositionDto positionDto) throws ParseException {
 
         Position position = positionService.update(id, positionDto.toPosition());
 
@@ -96,10 +97,7 @@ public class PositionRestController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        List<User> users = userService.findUsersWithPosition(position);
-        if(users != null) {
-            return new ResponseEntity<>(HttpStatus.PRECONDITION_FAILED);
-        }
+
 
         positionService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);

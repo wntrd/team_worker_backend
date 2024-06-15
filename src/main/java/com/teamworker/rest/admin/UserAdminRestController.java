@@ -1,6 +1,7 @@
 package com.teamworker.rest.admin;
 
 import com.teamworker.dtos.MainUserInfoDto;
+import com.teamworker.dtos.PositionDto;
 import com.teamworker.dtos.UserDto;
 import com.teamworker.models.User;
 import com.teamworker.services.UserService;
@@ -11,24 +12,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping(value = "/api/v1/admin/users")
-@Tag(name = "/api/v1/admin/users", description = "Контролер для керування користувачами")
-public class UserRestController {
+@Tag(name = "/api/v1/admin/users", description = "Контролер адміністрування користувачів")
+public class UserAdminRestController {
 
     private final UserService userService;
 
     @Autowired
-    public UserRestController(UserService userService) {
+    public UserAdminRestController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping(value = "get/all")
     @Operation(summary = "Отримати всіх користувачів")
-    public ResponseEntity<List<UserDto>> getAll(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<List<UserDto>> getAll() {
         List<User> users = userService.getAll();
 
         if (users == null) {
@@ -54,9 +57,9 @@ public class UserRestController {
 
     @PutMapping(value = "/update/{id}")
     @Operation(summary = "Оновити користувача")
-    public ResponseEntity<MainUserInfoDto> updateUser(
+    public ResponseEntity<UserDto> updateUser(
             @PathVariable(value = "id") Long id,
-            @RequestBody MainUserInfoDto userDto) {
+            @RequestBody UserDto userDto) {
 
         User user = userService.update(id, userDto.toUser());
 
@@ -64,7 +67,33 @@ public class UserRestController {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        MainUserInfoDto result = MainUserInfoDto.fromUser(user);
+        UserDto result = UserDto.fromUser(user);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/add/position/{id}")
+    @Operation(summary = "Оновити користувача")
+    public ResponseEntity<UserDto> addPosition(
+            @PathVariable(value = "id") Long id,
+            @RequestBody PositionDto positionDto) throws ParseException {
+
+        User user = userService.addPosition(id, positionDto.toPosition());
+
+        if(user == null) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        UserDto result = UserDto.fromUser(user);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    @Operation(summary = "Видалити користувача")
+    public ResponseEntity<UserDto> deleteUser(@PathVariable(value = "id") Long id) {
+        if(userService.getById(id) == null) {
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        userService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

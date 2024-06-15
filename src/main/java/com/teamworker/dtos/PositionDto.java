@@ -2,10 +2,9 @@ package com.teamworker.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.teamworker.models.Position;
-import com.teamworker.models.Project;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import java.text.ParseException;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -13,13 +12,13 @@ public class PositionDto {
 
     private Long id;
     private String name;
-    private Project project;
+    private ProjectDto projectDto;
 
-    public Position toPosition() {
+    public Position toPosition() throws ParseException {
         Position position = new Position();
         position.setId(id);
         position.setName(name);
-        position.setProject(project);
+        position.setProject(projectDto.toProject());
         return position;
     }
 
@@ -27,7 +26,7 @@ public class PositionDto {
         PositionDto positionDto = new PositionDto();
         positionDto.setId(position.getId());
         positionDto.setName(position.getName());
-        positionDto.setProject(position.getProject());
+        positionDto.setProjectDto(ProjectDto.fromProject(position.getProject()));
         return positionDto;
     }
 }

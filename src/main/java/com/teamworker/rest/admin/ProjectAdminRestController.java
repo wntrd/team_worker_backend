@@ -11,18 +11,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200/")
 @RequestMapping(value = "/api/v1/admin/projects")
 @Tag(name = "/api/v1/admin/projects", description = "Контролер для керування проектами")
-public class ProjectRestController {
+public class ProjectAdminRestController {
 
     private final ProjectService projectService;
 
     @Autowired
-    ProjectRestController(ProjectService projectService) {
+    ProjectAdminRestController(ProjectService projectService) {
         this.projectService = projectService;
     }
 
@@ -50,7 +52,7 @@ public class ProjectRestController {
 
     @PostMapping(value = "/add")
     @Operation(summary = "Додати проект")
-    public ResponseEntity<ProjectDto> addProject(@RequestBody ProjectDto projectDto) {
+    public ResponseEntity<ProjectDto> addProject(@RequestBody ProjectDto projectDto) throws ParseException {
         Project project = projectService.add(projectDto.toProject());
         if(project == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -63,7 +65,7 @@ public class ProjectRestController {
     @Operation(summary = "Оновити проект")
     public ResponseEntity<ProjectDto> updateProject(
             @PathVariable(value = "id") Long id,
-            @RequestBody ProjectDto projectDto) {
+            @RequestBody ProjectDto projectDto) throws ParseException {
 
         Project project = projectService.update(id, projectDto.toProject());
 

@@ -3,6 +3,8 @@ package com.teamworker.security.jwt;
 import com.teamworker.models.Role;
 import com.teamworker.security.JwtUserDetailsService;
 import io.jsonwebtoken.*;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,12 +17,15 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Transactional
+@Slf4j
 public class JwtTokenProvider {
 
     @Value("${jwt.token.secret}")
@@ -88,11 +93,11 @@ public class JwtTokenProvider {
             }
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
+            throw new JwtAuthenticationException("Токен неправильний або його термін дії вийшов");
         }
     }
 
     private List<String> getRoleNames(List<Role> userRoles) {
-        return userRoles.stream().map(role -> role.getName()).collect(Collectors.toList());
+        return userRoles.stream().map(Role::getName).collect(Collectors.toList());
     }
 }

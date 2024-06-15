@@ -1,5 +1,6 @@
 package com.teamworker.handlers;
 
+import com.teamworker.security.jwt.JwtAuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,8 +11,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ApplicationExceptionHandler {
     @ResponseStatus(
             value = HttpStatus.BAD_REQUEST,
-            reason = "Invalid username or password")
+            reason = "Неправильний логін або пароль")
     @ExceptionHandler(UsernameNotFoundException.class)
     public void handleException(UsernameNotFoundException e) {
+    }
+
+    @ResponseStatus(
+            value = HttpStatus.UNAUTHORIZED,
+            reason = "Токен неправильний або його термін дії вийшов")
+    @ExceptionHandler(JwtAuthenticationException.class)
+    public void handleTokenException(JwtAuthenticationException e) {
+
     }
 }

@@ -41,6 +41,11 @@ public class PositionServiceImpl implements PositionService {
 
     @Override
     public void delete(Long id) {
+        Position position = positionRepository.findById(id).orElse(null);
+        for (User user : position.getUsers()) {
+            user.getPosition().remove(position);
+        }
+
         positionRepository.deleteById(id);
         log.info("IN delete - {} position deleted", id);
     }

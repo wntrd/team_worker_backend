@@ -8,8 +8,11 @@ import com.teamworker.models.enums.Status;
 import com.teamworker.repositories.RoleRepository;
 import com.teamworker.repositories.UserRepository;
 import com.teamworker.services.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +21,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public User register(User user) {
@@ -100,13 +97,11 @@ public class UserServiceImpl implements UserService {
         }
 
         User userWithSameUsername = findByUsername(user.getUsername());
-
         if (userWithSameUsername != null && userWithSameUsername.getId() != id) {
             return null;
         }
 
         foundUser.setUsername(user.getUsername());
-        foundUser.setPassword(passwordEncoder.encode(user.getPassword()));
         foundUser.setName(user.getName());
         foundUser.setSurname(user.getSurname());
 
@@ -116,8 +111,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User addPosition(Long id, Position position) {
+        User foundUser = userRepository.findById(id).orElse(null);
+        if(foundUser == null) {
+            return null;
+        }
+
+        foundUser.getPosition().add(position);
+
+        log.info("IN addPosition - {} position added to user {}", position.getName(), foundUser.getId());
+        return userRepository.save(foundUser);
+    }
+
+    @Override
     public void delete(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        user.setPosition(new ArrayList<>());
+        user.setRoles(new ArrayList<>());
+        userRepository.save(user);
         userRepository.deleteById(id);
         log.info("IN delete - user with id: {} successfully deleted", id);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return this.findByUsername(auth.getName());
+    }
+
+    @Override
+    public boolean isAdmin(User user) {
+        Role roleAdmin = roleRepository.findByName("ROLE_ADMIN");
+        return user.getRoles().contains(roleAdmin);
+    }
+
+    @Override
+    public boolean isAdminOfProject(User user, Project project) {
+        for (Position position : user.getPosition()) {
+            if (position.getName() == "Administrator" && position.getProject() == project) {
+                return true;
+            }
+        }
+        return false;
     }
 }

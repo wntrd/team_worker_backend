@@ -7,7 +7,7 @@ import com.teamworker.models.enums.ProjectType;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -24,7 +24,7 @@ public class Project {
     private String name;
 
     @Column(name = "create_time")
-    private Date createTime;
+    private Timestamp createTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "project_stage")
