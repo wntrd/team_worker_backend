@@ -22,22 +22,23 @@ public class Task {
     @Column(name = "task_name")
     private String name;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(name = "create_time")
-    private Timestamp createTime;
+    private String createTime;
 
     @Column(name = "due_time")
-    private Timestamp dueTime;
+    private String dueTime;
 
     @Column(name = "last_edit_time")
-    private Timestamp lastEditTime;
+    private String lastEditTime;
 
     @Column(name = "start_time")
-    private Timestamp startTime;
+    private String startTime;
 
     @Column(name = "end_time")
-    private Timestamp endTime;
+    private String endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id",nullable = false)

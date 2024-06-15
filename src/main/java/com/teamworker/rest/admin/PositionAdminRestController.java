@@ -61,7 +61,7 @@ public class PositionAdminRestController {
     @PostMapping(value = "add")
     @Operation(summary = "Додати посаду")
     public ResponseEntity<PositionDto> addPosition(@RequestBody PositionDto positionDto) throws ParseException {
-        Project project = projectService.getById(positionDto.getProjectDto().getId());
+        Project project = projectService.getById(positionDto.getProject().getId());
         if(project == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }

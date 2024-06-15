@@ -18,7 +18,7 @@ public class ApplicationExceptionHandler {
 
     @ResponseStatus(
             value = HttpStatus.UNAUTHORIZED,
-            reason = "Токен неправильний або його термін дії вийшов")
+            reason = "Час дії токену вичерпано або він є недійсним")
     @ExceptionHandler(JwtAuthenticationException.class)
     public void handleTokenException(JwtAuthenticationException e) {
 

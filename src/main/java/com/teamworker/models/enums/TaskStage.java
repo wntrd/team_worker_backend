@@ -1,5 +1,5 @@
 package com.teamworker.models.enums;
 
 public enum TaskStage {
-    STARTED, IN_PROGRESS, DEBUG, RELEASE
+    CREATED, IN_PROGRESS, ON_REVIEW, RELEASED
 }

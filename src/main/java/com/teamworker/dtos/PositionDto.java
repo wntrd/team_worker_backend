@@ -12,13 +12,13 @@ public class PositionDto {
 
     private Long id;
     private String name;
-    private ProjectDto projectDto;
+    private ProjectDto project;
 
     public Position toPosition() throws ParseException {
         Position position = new Position();
         position.setId(id);
         position.setName(name);
-        position.setProject(projectDto.toProject());
+        position.setProject(project.toProject());
         return position;
     }
 
@@ -26,7 +26,7 @@ public class PositionDto {
         PositionDto positionDto = new PositionDto();
         positionDto.setId(position.getId());
         positionDto.setName(position.getName());
-        positionDto.setProjectDto(ProjectDto.fromProject(position.getProject()));
+        positionDto.setProject(ProjectDto.fromProject(position.getProject()));
         return positionDto;
     }
 }

@@ -31,25 +31,17 @@ public class TaskDto {
     private TaskStage stage;
     private TaskType type;
 
-    public Task toTask() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
-
-        Date parseDueTime = simpleDateFormat.parse(dueTime);
-        Timestamp parsedDueTime = new java.sql.Timestamp(parseDueTime.getTime());
-
-        Date parseStartTime = simpleDateFormat.parse(startTime);
-        Timestamp parsedStartTime = new java.sql.Timestamp(parseStartTime.getTime());
-
-        Date parseEndTime = simpleDateFormat.parse(endTime);
-        Timestamp parsedEndTime = new java.sql.Timestamp(parseEndTime.getTime());
+    public Task toTask() {
 
         Task task = new Task();
         task.setId(id);
         task.setName(name);
         task.setDescription(description);
-        task.setDueTime(parsedDueTime);
-        task.setStartTime(parsedStartTime);
-        task.setEndTime(parsedEndTime);
+        task.setCreateTime(createTime);
+        task.setDueTime(dueTime);
+        task.setLastEditTime(lastEditTime);
+        task.setStartTime(startTime);
+        task.setEndTime(endTime);
         task.setAssignee(assignee.toUser());
         task.setCreator(creator.toUser());
         task.setProject(project);
@@ -64,11 +56,11 @@ public class TaskDto {
         taskDto.setId(task.getId());
         taskDto.setName(task.getName());
         taskDto.setDescription(task.getDescription());
-        taskDto.setCreateTime(new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss").format(task.getCreateTime()));
-        taskDto.setDueTime(new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss").format(task.getDueTime()));
-        taskDto.setLastEditTime(new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss").format(task.getLastEditTime()));
-        taskDto.setStartTime(new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss").format(task.getStartTime()));
-        taskDto.setEndTime(new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss").format(task.getEndTime()));
+        taskDto.setCreateTime(task.getCreateTime());
+        taskDto.setDueTime(task.getDueTime());
+        taskDto.setLastEditTime(task.getLastEditTime());
+        taskDto.setStartTime(task.getStartTime());
+        taskDto.setEndTime(task.getEndTime());
         taskDto.setAssignee(UserDto.fromUser(task.getAssignee()));
         taskDto.setCreator(UserDto.fromUser(task.getCreator()));
         taskDto.setProject(task.getProject());

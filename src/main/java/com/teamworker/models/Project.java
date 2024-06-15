@@ -24,7 +24,7 @@ public class Project {
     private String name;
 
     @Column(name = "create_time")
-    private Timestamp createTime;
+    private String createTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "project_stage")
