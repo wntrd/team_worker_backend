@@ -15,7 +15,7 @@ public interface UserService {
 
     List<User> getAllByManager(Long id);
 
-    Map<User, List<Integer>> getAllWithStatsByManager(Long id);
+    Map<User, List<Integer>> getAllWithStats(User user);
 
     List<User> getAllManagers();
 

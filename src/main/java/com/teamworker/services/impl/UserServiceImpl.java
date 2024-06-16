@@ -106,8 +106,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<User, List<Integer>> getAllWithStatsByManager(Long id) {
-        List<User> users = this.getAllByManager(id);
+    public Map<User, List<Integer>> getAllWithStats(User currentUser) {
+        List<User> users = new ArrayList<>();
+        Role roleAdmin = roleRepository.findByName("ROLE_ADMIN");
+        if (currentUser.getRoles().contains(roleAdmin)) {
+            users = this.getAll();
+        }
+        else {
+            users = this.getAllByManager(currentUser.getId());
+        }
 
         if(users.isEmpty()) {
             log.warn("IN getAllWithStatsByManager - no users found");
