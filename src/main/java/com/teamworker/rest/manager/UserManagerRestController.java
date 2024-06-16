@@ -3,7 +3,9 @@ package com.teamworker.rest.manager;
 import com.teamworker.dtos.PositionDto;
 import com.teamworker.dtos.UserDto;
 import com.teamworker.dtos.UserStatsDto;
+import com.teamworker.models.Position;
 import com.teamworker.models.User;
+import com.teamworker.services.PositionService;
 import com.teamworker.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,10 +27,12 @@ import java.util.stream.Collectors;
 public class UserManagerRestController {
 
     private final UserService userService;
+    private final PositionService positionService;
 
     @Autowired
-    public UserManagerRestController(UserService userService) {
+    public UserManagerRestController(UserService userService, PositionService positionService) {
         this.userService = userService;
+        this.positionService = positionService;
     }
 
     @GetMapping(value = "get/all")
@@ -106,8 +110,9 @@ public class UserManagerRestController {
     public ResponseEntity<UserDto> deletePosition(
             @PathVariable(value = "id") Long id,
             @RequestBody PositionDto positionDto) throws ParseException {
+        Position position = positionService.getById(positionDto.getId());
 
-        User user = userService.deletePosition(id, positionDto.toPosition());
+        User user = userService.deletePosition(id, position);
 
         if(user == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
