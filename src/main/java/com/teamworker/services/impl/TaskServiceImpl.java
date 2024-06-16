@@ -277,7 +277,7 @@ public class TaskServiceImpl implements TaskService {
         tasks.addAll(taskRepository.getAllByAssigneeIdAndStage(id, TaskStage.CREATED));
         tasks.addAll(taskRepository.getAllByAssigneeIdAndStage(id, TaskStage.IN_PROGRESS));
 
-        if (tasks == null) {
+        if (tasks.isEmpty()) {
             return null;
         }
 
@@ -290,7 +290,7 @@ public class TaskServiceImpl implements TaskService {
     public String getAverageTimeOfCompletingByAssignee(Long id) {
         List<Task> tasks = taskRepository.getAllByAssigneeIdAndStage(id, TaskStage.RELEASED);
 
-        if (tasks == null) {
+        if (tasks.isEmpty()) {
             return "00:00:00";
         }
 
@@ -315,7 +315,7 @@ public class TaskServiceImpl implements TaskService {
     public Integer getNumberOfMostProductiveMonthByAssignee(Long id) {
         List<Task> tasks = taskRepository.getAllByAssigneeIdAndStage(id, TaskStage.RELEASED);
 
-        if (tasks == null) {
+        if (tasks.isEmpty()) {
             return 0;
         }
 

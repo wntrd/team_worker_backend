@@ -101,9 +101,11 @@ public class TaskManagerRestController {
 
     @GetMapping(value = "/get/stats/average/time/{id}")
     @Operation(summary = "Отримати середню тривалість виконання завдання певного користувача")
-    public ResponseEntity<String> getAverageTimeOfCompletingByAssignee(@PathVariable(value = "id") Long id) {
-        String time = taskService.getAverageTimeOfCompletingByAssignee(userService.getCurrentUser().getId());
-        return new ResponseEntity<>(time, HttpStatus.OK);
+    public ResponseEntity<String> getAverageTimeOfCompletingByAssignee(@PathVariable(value = "id") Long id) throws JSONException {
+        String time = taskService.getAverageTimeOfCompletingByAssignee(id);
+        JSONObject response = new JSONObject();
+        response.put("response", time);
+        return new ResponseEntity<>(response.toString(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/get/stats/best/month/{id}")
@@ -172,6 +174,9 @@ public class TaskManagerRestController {
     public ResponseEntity<TaskDto> getTaskWithClosestDueTimeByAssignee(@PathVariable(value = "id") Long id)
             throws ParseException {
         Task task = taskService.getTaskWithClosestDueTimeByAssignee(id);
+        if (task == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(TaskDto.fromTask(task), HttpStatus.OK);
     }
 }

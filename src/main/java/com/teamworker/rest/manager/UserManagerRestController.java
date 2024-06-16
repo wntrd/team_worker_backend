@@ -57,7 +57,7 @@ public class UserManagerRestController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "get/stats/users/all")
+    @GetMapping(value = "get/stats/all")
     @Operation(summary = "Отримати всіх користувачів з проектів авторизованого менеджера(адміністратора) зі статистикою")
     public ResponseEntity<List<UserStatsDto>> getAllWithStatsByManager() {
         Map<User, List<Integer>> usersWithStats = userService.getAllWithStats(userService.getCurrentUser());
