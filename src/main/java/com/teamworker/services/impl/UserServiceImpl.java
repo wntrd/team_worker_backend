@@ -5,8 +5,10 @@ import com.teamworker.models.Project;
 import com.teamworker.models.Role;
 import com.teamworker.models.User;
 import com.teamworker.models.enums.Status;
+import com.teamworker.models.enums.TaskStage;
 import com.teamworker.repositories.RoleRepository;
 import com.teamworker.repositories.UserRepository;
+import com.teamworker.services.TaskService;
 import com.teamworker.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TaskService taskService;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Override
@@ -103,6 +103,27 @@ public class UserServiceImpl implements UserService {
 
         List<User> usersWithoutDuplicates = new ArrayList<>(new HashSet<>(users));
         return usersWithoutDuplicates;
+    }
+
+    @Override
+    public Map<User, List<Integer>> getAllWithStatsByManager(Long id) {
+        List<User> users = this.getAllByManager(id);
+
+        if(users.isEmpty()) {
+            log.warn("IN getAllWithStatsByManager - no users found");
+            return null;
+        }
+
+        Map<User, List<Integer>> usersWithStats = new LinkedHashMap<>();
+
+        for (User user : users) {
+            List<Integer> stats = new ArrayList<>();
+            stats.add(taskService.getPercentageOfCompletedOnTime(user.getId()));
+            stats.add(taskService.getNumberByAssigneeAndStage(user.getId(), TaskStage.RELEASED.name()));
+            usersWithStats.put(user, stats);
+        }
+
+        return usersWithStats;
     }
 
     @Override

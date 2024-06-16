@@ -4,8 +4,10 @@ import com.teamworker.models.Project;
 import com.teamworker.models.Task;
 import com.teamworker.models.User;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskService {
 
@@ -25,15 +27,29 @@ public interface TaskService {
 
     Integer getNumberByAssigneeAndStage(Long id, String stageName);
 
+    Integer getNumberByAssigneeAndType(Long id, String typeName);
+
+    Map<String, Integer> getNumbersWithTypesByAssignee(Long id);
+
+    Map<String, Integer> getNumbersWithStagesByAssignee(Long id);
+
+    String getAverageTimeOfCompletingByAssignee(Long id);
+
+    Integer getNumberOfMostProductiveMonthByAssignee(Long id);
+
+    Map<String, Integer> getNumbersWithMonthsByAssignee(Long id);
+
+    Task getTaskWithClosestDueTimeByAssignee(Long id);
+
     Task getById(Long id);
 
-    List<Task> getAllByStage(String stageName) throws ParseException;
+    List<Task> getAllByStage(Long id, String stageName) throws ParseException;
 
-    List<Task> getAllByManager(Long id);
+    List<Task> getAllByManager(User manager);
 
     List<Task> getAllByStageForAdmin(String stageName) throws ParseException;
 
-    List<Task> getAllByStageForManager(String stageName, Long id);
+    List<Task> getAllByStageForManager(User manager, String stageName);
 
     Task changeStage(Long taskId, String stageName);
 

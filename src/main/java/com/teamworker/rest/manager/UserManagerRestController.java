@@ -2,6 +2,7 @@ package com.teamworker.rest.manager;
 
 import com.teamworker.dtos.PositionDto;
 import com.teamworker.dtos.UserDto;
+import com.teamworker.dtos.UserStatsDto;
 import com.teamworker.models.User;
 import com.teamworker.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -50,6 +53,21 @@ public class UserManagerRestController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         List<UserDto> result = users.stream().map(UserDto::fromUser).collect(Collectors.toList());
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "get/stats/users/all")
+    @Operation(summary = "Отримати всіх користувачів з проектів авторизованого менеджера зі статистикою")
+    public ResponseEntity<List<UserStatsDto>> getAllWithStatsByManager() {
+        Map<User, List<Integer>> usersWithStats = userService.getAllWithStatsByManager(userService.getCurrentUser().getId());
+
+        if (usersWithStats == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        List<UserStatsDto> result = new ArrayList<>();
+        usersWithStats.entrySet().forEach(entry -> result.add(UserStatsDto.fromUserWithStats(entry.getKey(), entry.getValue())));
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

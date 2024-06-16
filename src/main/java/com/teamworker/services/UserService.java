@@ -5,6 +5,7 @@ import com.teamworker.models.Project;
 import com.teamworker.models.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -13,6 +14,8 @@ public interface UserService {
     List<User> getAll();
 
     List<User> getAllByManager(Long id);
+
+    Map<User, List<Integer>> getAllWithStatsByManager(Long id);
 
     List<User> getAllManagers();
 
