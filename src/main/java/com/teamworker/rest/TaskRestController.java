@@ -6,6 +6,7 @@ import com.teamworker.dtos.TaskDto;
 import com.teamworker.models.Project;
 import com.teamworker.models.Task;
 import com.teamworker.services.TaskService;
+import com.teamworker.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,15 @@ import java.util.stream.Collectors;
 public class TaskRestController {
 
     private final TaskService taskService;
+    private final UserService userService;
 
     private final SimpleDateFormat getDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     private final SimpleDateFormat setDateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm");
 
     @Autowired
-    public TaskRestController(TaskService taskService) {
+    public TaskRestController(TaskService taskService, UserService userService) {
         this.taskService = taskService;
+        this.userService = userService;
     }
 
     @PostMapping(value = "/add")
@@ -73,6 +76,20 @@ public class TaskRestController {
 
         TaskDto result = TaskDto.fromTask(task);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/stats/ontime")
+    @Operation(summary = "Отримати відсоток зроблених вчасно завдань авторизованого користувача")
+    public ResponseEntity<Integer> getPercentageOfMadeOnTime() {
+        Integer percentage = taskService.getPercentageOfCompletedOnTime(userService.getCurrentUser().getId());
+        return new ResponseEntity<>(percentage, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/stats/number/{stage}")
+    @Operation(summary = "Отримати кількість завдань авторизованого користувача за стадією")
+    public ResponseEntity<Integer> getNumberByUserAndStage(@PathVariable(value = "stage") String stageName) {
+        Integer number = taskService.getNumberByAssigneeAndStage(userService.getCurrentUser().getId(), stageName);
+        return new ResponseEntity<>(number, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}")

@@ -19,6 +19,12 @@ public interface TaskService {
 
     List<Task> getAllByProject(Project project);
 
+    List<Task> getAllByAssignee(Long id);
+
+    Integer getPercentageOfCompletedOnTime(Long id);
+
+    Integer getNumberByAssigneeAndStage(Long id, String stageName);
+
     Task getById(Long id);
 
     List<Task> getAllByStage(String stageName) throws ParseException;

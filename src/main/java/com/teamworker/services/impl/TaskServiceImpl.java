@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.teamworker.models.enums.TaskStage.*;
 
@@ -198,6 +199,29 @@ public class TaskServiceImpl implements TaskService {
         List<Task> tasks = taskRepository.getAllByProject(project);
         log.info("IN getAllByProject - {} tasks found", tasks.size());
         return tasks;
+    }
+
+    @Override
+    public List<Task> getAllByAssignee(Long id) {
+        List<Task> tasks = taskRepository.getAllByAssigneeId(id);
+        log.info("IN getAllByAssignee - {} tasks found", tasks.size());
+        return tasks;
+    }
+
+    @Override
+    public Integer getPercentageOfCompletedOnTime(Long id) {
+        List<Task> tasks = this.getAllByAssignee(id);
+        Integer numberOfCompletedTasks = this.getNumberByAssigneeAndStage(id, RELEASED.name());
+        List<Task> tasksOnTime = tasks.stream().filter(
+                task -> (task.getEndTime() != null && task.getEndTime().before(task.getDueTime())
+                        && Objects.equals(task.getStage(), RELEASED)))
+                .collect(Collectors.toList());
+        return Math.toIntExact(Math.round((double) tasksOnTime.size() / numberOfCompletedTasks * 100));
+    }
+
+    @Override
+    public Integer getNumberByAssigneeAndStage(Long id, String stageName) {
+        return taskRepository.countTasksByAssigneeIdAndStage(id, TaskStage.valueOf(stageName));
     }
 
     @Override

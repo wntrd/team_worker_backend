@@ -78,4 +78,19 @@ public class TaskManagerRestController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/get/stats/ontime/{id}")
+    @Operation(summary = "Отримати відсоток зроблених вчасно завдань певного користувача")
+    public ResponseEntity<Integer> getPercentageOfMadeOnTime(@PathVariable(value = "id") Long id) {
+        Integer percentage = taskService.getPercentageOfCompletedOnTime(id);
+        return new ResponseEntity<>(percentage, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/stats/number/{id}/{stage}")
+    @Operation(summary = "Отримати кількість завдань певного користувача за стадією")
+    public ResponseEntity<Integer> getNumberByUserAndStage(@PathVariable(value = "id") Long id,
+                                                           @PathVariable(value = "stage") String stageName) {
+        Integer number = taskService.getNumberByAssigneeAndStage(id, stageName);
+        return new ResponseEntity<>(number, HttpStatus.OK);
+    }
 }
